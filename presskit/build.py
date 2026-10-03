@@ -125,7 +125,6 @@ def sheet(H, bleed=False):   # bleed: no outer margin/frame, for banners YouTube
 
 vb, body = sheet(1080, bleed=True)
 emit(f"{B}/svg/banner-youtube-2560x1440.svg", vb, body, 2560, transparent=False)
-vb, body = sheet(1080)
 emit(f"{B}/svg/banner-16x9-1920x1080.svg", vb, body, 1920, transparent=False)
 vb, body = sheet(1008)
 emit(f"{B}/svg/banner-link-preview-1200x630.svg", vb, body, 1200, transparent=False)
