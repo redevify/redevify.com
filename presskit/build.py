@@ -108,10 +108,10 @@ emit(f"{B}/svg/banner-wide-3600x1200.svg", (0, 0, W, H), "".join(a), PX, transpa
 # A at 16:9 (slides 1920x1080, YouTube 2560x1440) and 1.91:1 (link preview 1200x630).
 # Layout is in 1920-wide units. YouTube safe area (shows on every device) is the centre 1160x317 of the 1080-high
 # canvas: label, headline, lede and mark all sit inside it; header/footer chrome is allowed to crop.
-def sheet(H):
-    W = 1920; cy = H / 2; top, bot = 112.5, H - 112.5; dx = 675.5
-    p = [f'<rect width="{W}" height="{H}" fill="{PAPER}"/>', f'<rect x="30.5" y="30.5" width="{W-61}" height="{H-61}" fill="{SHEET}" stroke="{LINE}"/>']
-    for ln in (f'M30 {top}H{W-30}', f'M30 {bot}H{W-30}', f'M{dx} {top}V{bot}'): p.append(f'<path d="{ln}" stroke="{LINE}" fill="none"/>')
+def sheet(H, bleed=False):   # bleed: no outer margin/frame, for banners YouTube crops to a wide strip
+    W = 1920; m = 0 if bleed else 30; cy = H / 2; top, bot = 112.5, H - 112.5; dx = 675.5
+    p = [f'<rect width="{W}" height="{H}" fill="{SHEET if bleed else PAPER}"/>'] + ([] if bleed else [f'<rect x="30.5" y="30.5" width="{W-61}" height="{H-61}" fill="{SHEET}" stroke="{LINE}"/>'])
+    for ln in (f'M{m} {top}H{W-m}', f'M{m} {bot}H{W-m}', f'M{dx} {top}V{bot}'): p.append(f'<path d="{ln}" stroke="{LINE}" fill="none"/>')
     p.append(mark(525, cy, 225, INK, INK, 0.32))
     p.append(text("redevify", 30, 68, 78, INK, 600, -0.025)[0])
     p.append(text("SOFTWARE STUDIO", 15, W-68, 76, MUTED, 400, 0.16, "end")[0])
@@ -123,8 +123,9 @@ def sheet(H):
     p.append(text("REDEVIFY.COM", 15, W-68, bot + 58, MUTED, 400, 0.14, "end")[0])
     return (0, 0, W, H), "".join(p)
 
-vb, body = sheet(1080)
+vb, body = sheet(1080, bleed=True)
 emit(f"{B}/svg/banner-youtube-2560x1440.svg", vb, body, 2560, transparent=False)
+vb, body = sheet(1080)
 emit(f"{B}/svg/banner-16x9-1920x1080.svg", vb, body, 1920, transparent=False)
 vb, body = sheet(1008)
 emit(f"{B}/svg/banner-link-preview-1200x630.svg", vb, body, 1200, transparent=False)
